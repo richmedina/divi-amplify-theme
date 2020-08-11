@@ -9,9 +9,14 @@ get_header();
 $args = array(
     'numberposts'   	=> -1,
     'post_type'      	=> 'experience',
-    'meta_key'       	=> 'start_date',
-    'meta_value'   		=> date( "Y-m-d" ),
-    'meta_compare' 		=> '>=',
+	'meta_query' 	=> array(
+		array(
+		 'key'     	=> 'start_date',
+		 'value'   	=> date( "Y-m-d" ),
+		 'compare' 	=> '>=',
+		 'type'    	=> 'DATE'
+		)
+	),
     'order'   			=> 'ASC',
     'orderby'			=> 'start_date',
     'offset'			=> 1,
@@ -23,9 +28,14 @@ $upcoming_posts = new WP_Query($args);
 $args2 = array(
     'numberposts'   	=> -1,
     'post_type'      	=> 'experience',
-    'meta_key'       	=> 'start_date',
-    'meta_value'   		=> date( "Y-m-d" ),
-    'meta_compare'		=> '<',
+	'meta_query' 	=> array(
+		array(
+		 'key'     	=> 'start_date',
+		 'value'   	=> date( "Y-m-d" ),
+		 'compare' 	=> '<',
+		 'type'    	=> 'DATE'
+		)
+	),
     'order'   			=> 'DESC',
     'orderby'			=> 'modified',
     'offset'			=> 0,
@@ -36,29 +46,37 @@ $past_posts = new WP_Query($args2);
 $args3 = array(
     'numberposts'   	=> -1,
     'post_type'      	=> 'experience',
-    'meta_key'       	=> 'start_date',
-    'meta_value'   		=> date( "Y-m-d" ),
-    'meta_compare' 		=> '>=',
+	'meta_query' 	=> array(
+		array(
+		 'key'     	=> 'start_date',
+		 'value'   	=> date( "Y-m-d" ),
+		 'compare' 	=> '>=',
+		 'type'    	=> 'DATE'
+		)
+	),
     'order'   			=> 'ASC',
     'orderby'			=> 'start_date',
     'offset'			=> 0,
     'posts_per_page' 	=> 1,
 );
-
 $featured = new WP_Query($args3);
 
 $args4 = array(
     'numberposts'   	=> -1,
     'post_type'      	=> 'experience',
-    'meta_key'       	=> 'start_date',
-    'meta_value'   		=> date( "Y-m-d" ),
-    'meta_compare'		=> '<',
+	'meta_query' 	=> array(
+		array(
+		 'key'     	=> 'start_date',
+		 'value'   	=> date( "Y-m-d" ),
+		 'compare' 	=> '<',
+		 'type'    	=> 'DATE'
+		)
+	),
     'order'   			=> 'DESC',
     'orderby'			=> 'start_date',
     'offset'			=> 0,
     'posts_per_page' 	=> 1,
 );
-
 $featured2 = new WP_Query($args4);
 
 ?>	
@@ -126,14 +144,14 @@ $featured2 = new WP_Query($args4);
 	</div> <!-- .et_pb_code -->
 	<div class="et_pb_section et_pb_section_0 et_section_regular">
 		<div class="et_pb_row et_pb_row_0">
-			<h1 class="front-title">Professional Learning Experiences </h1>
-			<h2 class="front-title">in World Language Education</h2>
+			<!-- <h1 class="front-title">Professional Learning Experiences </h1>
+			<h2 class="front-title">in World Language Education</h2> -->
 		</div>						
 		<div class="et_pb_row et_pb_row_0">
 			<div class="et_pb_column et_pb_column_2_5 et_pb_column_0 et_pb_css_mix_blend_mode_passthrough">
 				
 				<?php if ( $featured->have_posts() ) : ?>
-					<h1>Next Up</h1>
+					<h1></h1>
 					<?php  while ( $featured->have_posts() ) : $featured->the_post(); ?>
 			 			<article id="post-<?php the_ID()?>" class="et_pb_post clearfix post-<?php the_ID()?> has-post-thumbnail hentry card-feature">
 			 				<header>
@@ -193,7 +211,7 @@ $featured2 = new WP_Query($args4);
 			<div class="et_pb_column et_pb_column_3_5 et_pb_column_1 et_pb_css_mix_blend_mode_passthrough left-blog-image">
 				
 				<?php if ( $upcoming_posts->have_posts() ) : ?>
-					<h1>Coming Soon</h1>
+					<h2>Coming Soon</h2>
 					<?php  while ( $upcoming_posts->have_posts() ) : $upcoming_posts->the_post(); ?>	
 			 			<article id="post-<?php the_ID()?>" class=" card-event-row">
 			 				<!-- COL 1 -->
@@ -247,7 +265,7 @@ $featured2 = new WP_Query($args4);
 						</article>
 					<?php endwhile; ?>
 				<?php else: ?>
-					<p>Nothing coming up</p>
+					<p>There are no registered Experiences on the horizon.</p>
 				<?php endif; ?>		   
 				<?php wp_reset_postdata();?>
 			</div> <!-- .et_pb_column -->
