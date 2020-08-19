@@ -1,6 +1,6 @@
 <?php
 /*
-Template Name: taxonomy.php
+Template Name: search.php
 Customized for pdlang.
 */
 get_header();

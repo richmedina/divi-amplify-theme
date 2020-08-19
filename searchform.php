@@ -1,3 +1,4 @@
+<?php
 function ajax_search() {
   $search = sanitize_text_field( $_POST[ 'query' ] );
 

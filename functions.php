@@ -6,6 +6,9 @@ add_action( 'wp_enqueue_scripts', 'divi__child_theme_enqueue_styles' );
 
 /* CUSTOM FUNCTIONS */
 
+/* Custom shortcodes */
+include('amplify-shortcodes.php');
+
 /* Utility functions */
 function experience_post_data($p, $show_thumb=true, $show_blurb=true, $show_start_date=false) {
 	setup_postdata( $p );
@@ -21,7 +24,13 @@ function experience_post_data($p, $show_thumb=true, $show_blurb=true, $show_star
 	$tags = get_the_terms( $p->ID, 'experience_tags', ' ', ', ');
 	
 	$single = "";
-	if (!has_post_thumbnail()) { $single = ".single"; }
+	if (!$show_thumb) {
+		$single = ".single";
+		$thumb = "";
+	} elseif (!has_post_thumbnail()) { 
+		$single = ".single"; 
+	}
+	
 
 	$start_date = get_field('start_date', $p->ID);
 	$d = getdate(strtotime($start_date));
@@ -160,6 +169,22 @@ function dp_dfg_custom_query_function($query, $props) {
 		    'offset'			=> 0,
 		    'posts_per_page' 	=> 1,
         );    	
+    } elseif (isset($props['admin_label']) && $props['admin_label'] === 'APL: Upcoming') {
+        return array(
+		    'post_type'		=> 'experience',
+			'meta_query' 	=> array(
+				array(
+				 'key'     	=> 'start_date',
+				 'value'   	=> date( "Y-m-d" ),
+				 'compare' 	=> '>=',
+				 'type'    	=> 'DATE'
+				)
+			),
+		    'order'			=> 'ASC',
+		    'orderby'       => 'start_date',
+		    'offset'        => 1,
+		    'posts_per_page'=> 3,
+        );    	
     }
 }
 add_filter('dpdfg_custom_query_args', 'dp_dfg_custom_query_function', 10, 2);
@@ -263,10 +288,14 @@ function dpdfg_after_read_more($content, $props) {
     	$output .= "<div>{$blurb}</div>";
     	$output .= "<div class='tag-series'>{$series_tags}</div>";
 	    $output .= "<div class='tags'>{$tags}</div>";
-	    $output .= "<div style='font-size: 0.8em; text-align: right;'>Updated {$updated}</div>";
+	    $output .= "<div class='mod-date'><time>Updated {$updated}</time></div>";
     	return $output;
     	// $p = get_post();
     	// experience_post_data($p);
+    }  elseif (isset($props['admin_label']) && $props['admin_label'] === 'APL: Upcoming') {
+		$p = get_post();
+		// $show_thumb=true, $show_blurb=true, $show_start_date=false
+		return experience_post_data($p, false, true, true);
     }
 }
 add_filter('dpdfg_after_read_more', 'dpdfg_after_read_more', 10, 2);
