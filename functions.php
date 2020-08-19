@@ -7,7 +7,7 @@ add_action( 'wp_enqueue_scripts', 'divi__child_theme_enqueue_styles' );
 /* CUSTOM FUNCTIONS */
 
 /* Custom shortcodes */
-// include('amplify-shortcodes.php');
+include('amplify-shortcodes.php');
 
 /* Utility functions */
 function experience_post_data($p, $show_thumb=true, $show_blurb=true, $show_start_date=false) {
