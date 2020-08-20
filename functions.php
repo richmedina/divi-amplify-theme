@@ -10,6 +10,67 @@ add_action( 'wp_enqueue_scripts', 'divi__child_theme_enqueue_styles' );
 include('amplify-shortcodes.php');
 
 /* Utility functions */
+
+function display_as_date_block($start_date, $display_year=true) {
+	$date_block_str = "";
+	$d = getdate(strtotime($start_date));
+	$day = $d['mday'];
+	$mon = substr($d['month'], 0, 3);
+	$year = $display_year ?  substr($d['year'], 0, 4) : "";
+	$blk_cls = $display_year ?  "" : "no-year";
+	
+	$date_block_str .= "<div class='date-block {$blk_cls}'>";
+	if (strtotime(date( "Y-m-d" )) > strtotime($start_date)) {
+		$date_block_str .= "<div class='date-block-top past_date'>{$mon}</div><div class='date-block-bottom'>{$day}</div><div class='date-block-footer'>{$year}</div>";
+	} else {
+		$date_block_str .= "<div class='date-block-top'>{$mon}</div><div class='date-block-bottom'>{$day}</div><div class='date-block-footer'>{$year}</div>";
+	}
+    $date_block_str .= "</div>"; //END date block
+    return $date_block_str;
+}
+
+function display_as_resource_block($resource_type, $access_link) {
+	$resource_type_str = "";
+	if($access_link) {
+		$resource_type_str .= "<a href='{$access_link}' target='_blank'><span class='label lbl-blu pd_resource_label'>{$resource_type}</span></a>";
+	} else {
+		$resource_type_str .= "<span class='label lbl-blu pd_resource_label'>{$resource_type}</span>";
+	}
+	return $resource_type_str;
+}
+
+function experience_field_data($p) {
+	$d = array(
+		'access_link'	=> 	get_field('url_website', $p->ID),
+		'description'	=> 	get_field('resource_description', $p->ID),
+		'link'			=>	get_permalink($p->ID),
+		'mod_date'		=> 	get_the_modified_date('', $p->ID),
+		'resource_type'	=>	get_field('pd_resource', $p->ID),
+		'series'		=> 	get_the_term_list( $p->ID, 'series', 'Part of ', ', '),
+		'start_date'	=> 	get_field('start_date', $p->ID),
+		'tags'			=> 	get_the_term_list( $p->ID, 'experience_tags', ' ', ', '),
+		'thumb'			=> 	get_the_post_thumbnail($p),
+		'title'			=> 	$p->post_title
+	);
+	$people_str = "";
+	$people = get_field('presenters__facilitators_relation', $p->ID);
+    if( $people ) {
+		$people_str .= " by ";
+		$len = count($people);
+		foreach( $people as $idx => $ppl) {
+			$pname = $ppl->post_title;
+			$plink = get_permalink($ppl->ID);
+			$people_str .= "<span><a href='{$plink}'>{$pname}</a>";
+			if ($idx === $len - 2) $people_str .= " & ";
+			else if ($idx < $len -1) $people_str .= ", ";
+			$people_str .= "</span>";
+		}
+    }
+    $d['people'] = $people_str;
+
+	return $d;
+}
+
 function experience_post_data($p, $show_thumb=true, $show_blurb=true, $show_start_date=false) {
 	setup_postdata( $p );
 	
@@ -23,6 +84,7 @@ function experience_post_data($p, $show_thumb=true, $show_blurb=true, $show_star
 	$series = get_the_terms( $p->ID, 'series', 'Part of ', ', ');
 	$tags = get_the_terms( $p->ID, 'experience_tags', ' ', ', ');
 	
+	// configure thumbnail display
 	$single = "";
 	if (!$show_thumb) {
 		$single = ".single";
@@ -31,22 +93,11 @@ function experience_post_data($p, $show_thumb=true, $show_blurb=true, $show_star
 		$single = ".single"; 
 	}
 	
-
+	// configure start date display as a block
 	$start_date = get_field('start_date', $p->ID);
-	$d = getdate(strtotime($start_date));
-	$day = $d['mday'];
-	$mon = substr($d['month'], 0, 3);
-	$year = substr($d['year'], 0, 4);
 	$date_block_str = "";
 	if ($show_start_date) {
-		$date_block_str .= "<div class='date-block' style='display: inline-block'>";
-		if (strtotime(date( "Y-m-d" )) > strtotime($start_date)) {
-		$date_block_str .= "<div class='date-block-top past_date'>{$mon}</div><div class='date-block-bottom'>{$day}</div><div class='date-block-footer'>{$year}</div>";
-		} else {
-		$date_block_str .= "<div class='date-block-top'>{$mon}</div><div class='date-block-bottom'>{$day}</div><div class='date-block-footer'>{$year}</div>";
-		}
-	    $date_block_str .= "</div>"; //END date block
-
+		display_as_date_block($start_date);
 	}
 
 	$resource_type_str = "";
@@ -138,7 +189,7 @@ function experience_post_data($p, $show_thumb=true, $show_blurb=true, $show_star
 */
 function dp_dfg_custom_query_function($query, $props) {
 	// var_dump($props);
-   	if (isset($props['admin_label']) && $props['admin_label'] === 'APL: Recently Updated') {
+   	if (isset($props['admin_label']) && $props['admin_label'] === 'AMP: Recently Updated') {
         return array(
             'post_type' => 'experience',
 			'meta_query' 	=> array(
@@ -153,7 +204,7 @@ function dp_dfg_custom_query_function($query, $props) {
 		    'orderby'			=> 'modified',
     		'posts_per_page' 	=> 3,
         );
-    } elseif (isset($props['admin_label']) && $props['admin_label'] === 'APL: Recently Featured') {
+    } elseif (isset($props['admin_label']) && $props['admin_label'] === 'AMP: Recently Featured') {
         return array(
             'post_type' => 'experience',
 			'meta_query' 	=> array(
@@ -169,7 +220,7 @@ function dp_dfg_custom_query_function($query, $props) {
 		    'offset'			=> 0,
 		    'posts_per_page' 	=> 1,
         );    	
-    } elseif (isset($props['admin_label']) && $props['admin_label'] === 'APL: Upcoming') {
+    } elseif (isset($props['admin_label']) && $props['admin_label'] === 'AMP: Upcoming List') {
         return array(
 		    'post_type'		=> 'experience',
 			'meta_query' 	=> array(
@@ -185,9 +236,29 @@ function dp_dfg_custom_query_function($query, $props) {
 		    'offset'        => 1,
 		    'posts_per_page'=> 3,
         );    	
+    } elseif (isset($props['admin_label']) && $props['admin_label'] === 'AMP: Upcoming Feature') {
+        return array(
+		    'post_type'		=> 'experience',
+			'meta_query' 	=> array(
+				array(
+				 'key'     	=> 'start_date',
+				 'value'   	=> date( "Y-m-d" ),
+				 'compare' 	=> '>=',
+				 'type'    	=> 'DATE'
+				)
+			),
+		    'order'			=> 'ASC',
+		    'orderby'       => 'start_date',
+		    'offset'        => 0,
+		    'posts_per_page'=> 1,
+        );    	
     }
 }
 add_filter('dpdfg_custom_query_args', 'dp_dfg_custom_query_function', 10, 2);
+
+/** END DIVI Custom Queries **/
+
+/** DIVI Custom Displays for Advanced Filter Grid **/
 
 /**
 	Documentation: https://diviplugins.com/documentation/divi-filtergrid/custom-content/
@@ -198,110 +269,138 @@ add_filter('dpdfg_custom_query_args', 'dp_dfg_custom_query_function', 10, 2);
 		module_id is what can be set for the CSS ID in the module instance settings.
 */
 function dpdfg_after_read_more($content, $props) {
-    if (isset($props['admin_label']) && $props['admin_label'] === 'APL: Recently Updated') {
+    if (isset($props['module_class']) && $props['module_class'] === 'amp-listing') {
+   		$d = experience_field_data(get_post());
+
+		$single = has_post_thumbnail() ? "" : ".single";
+		$resource_type_blk = display_as_resource_block($d['resource_type'], $d['access_link']);
+		$description = wp_trim_words($d['description'], 20, ' ...');
+
+		$html = "";		
+	  	$html = "<div class='card-wrap-row{$single}'>";
+		$html .= 	"<div>{$d['thumb']}</div>";  //Thumbnail column
+		$html .= 	"<div class='card'>";
+		$html .= 		"<header class='card-header'>";
+		$html .= 			"<h4 class='card-title'><a href='{$d['link']}'>{$d['title']}</a></h4>";
+		$html .=			$resource_type_blk;
+		$html .= 			$d['people'];
+		$html .= 		"</header>";
+		
+		$html .= 		"<div class='card-body'><div class='date_str'>{$d['start_date']}</div>{$description}</div>";
+		
+		$html .= 		"<footer class='card-footer'>";
+		$html .= 			"<div class='tag-series'>{$d['series']}</div>";
+		$html .= 			"<div class='tags'>{$d['tags']}</div>";
+		$html .= 			"<div class='mod-date'><time>Updated {$d['mod_date']}</time></div>";
+		$html .= 		"</footer>"; //END footer
+		$html .= 	"</div>"; //END card	
+		$html .= "</div>"; //END grid row
+    	return $html;
+
+    }  elseif (isset($props['module_class']) && $props['module_class'] === 'amp-listing-flipped') {
+   		$d = experience_field_data(get_post());
+		
+		$single = has_post_thumbnail() ? "" : ".single";
+		$resource_type_blk = display_as_resource_block($d['resource_type'], $d['access_link']);
+		$description = wp_trim_words($d['description'], 20, ' ...');
+
+		$html = "";		
+	  	$html = "<div class='card-wrap-row{$single}'>";
+		$html .= 	"<div class='card'>";
+		$html .= 		"<header class='card-header'>";
+		$html .= 			"<h4 class='card-title'><a href='{$d['link']}'>{$d['title']}</a></h4>";
+		$html .=			$resource_type_blk;
+		$html .= 			$d['people'];
+		$html .= 		"</header>";
+		
+		$html .= 		"<div class='card-body'><div class='date_str'>{$d['start_date']}</div>{$description}</div>";
+		
+		$html .= 		"<footer class='card-footer'>";
+		$html .= 			"<div class='tag-series'>{$d['series']}</div>";
+		$html .= 			"<div class='tags'>{$d['tags']}</div>";
+		$html .= 			"<div class='mod-date'><time>Updated {$d['mod_date']}</time></div>";
+		$html .= 		"</footer>"; //END footer
+		$html .= 	"</div>"; //END card
+		$html .= 	"<div>{$d['thumb']}</div>"; //Thumbnail column
+		$html .= "</div>"; //END grid row
+    	return $html;
     	
-  //       $output = "";
-  //       $img = get_the_post_thumbnail();
-  //       $title = get_the_title();
-  //       $exp_excerpt = get_post_meta( get_the_ID(), 'resource_description', true );
-  //       $blurb = wp_trim_words($exp_excerpt, 12, ' ...');
-  //       $updated = get_the_modified_date();
-  //       $pdtype = get_field('pd_resource');
+    }  elseif (isset($props['module_class']) && $props['module_class'] === 'amp-listing-stacked') {
+   		$d = experience_field_data(get_post());
+		
+		$resource_type_blk = display_as_resource_block($d['resource_type'], $d['access_link']);
+		$description = wp_trim_words($d['description'], 40, ' ...');
 
-  //       $pdtype_str = "";
-  //       if ($pdtype) { $pdtype_str = "label lbl-blu pd_resource_label";}
-        
-		// $people = get_field('presenters__facilitators_relation');
-		// $people_str = "";
-		// if( $people ) {
-		// 	$people_str .= " by ";
-		// 	$len = count($people);
-		// 	foreach( $people as $idx => $p) {
-		// 	  $name = $p->post_title;
-		// 	  $affiliation = get_field('affiliation', $p->ID);
-		// 	  $position = get_field('position', $p->ID);
-		// 	  $link = get_permalink($p->ID);
-		// 	  $people_str .= "<span><a href='{$link}'>{$name}</a>";
-		// 	  if ($idx === $len - 2) $people_str .= " & ";
-		// 	  else if ($idx < $len -1) $people_str .= ", ";
-		// 	  $people_str .= "</span>";
-		// 	}
-		// }
+		$html = "";
+		$html .= "<div class='card'>";
+		$html .= 	"<header class='card-header'>";
+		$html .=	$resource_type_blk;
+		$html .= 	$d['people'];
+		$html .= 	"</header>";
 
-		// $single = "";
-		// if (!has_post_thumbnail()) { $single = ".single"; }
+		$html .= 	"<div class='card-body'><div class='date_str'>{$d['start_date']}</div>{$description}</div>";
 
-		// $series_tags = get_the_term_list( get_the_ID(), 'series', 'In ', ''); 
-		// $tags = get_the_term_list( get_the_ID(), 'experience_tags','', '');
+		$html .= 	"<footer class='card-footer'>";
+		$html .= 		"<div class='tag-series'>{$d['series']}</div>";
+		$html .= 		"<div class='tags'>{$d['tags']}</div>";
+		$html .= 		"<div class='mod-date'><time>Updated {$d['mod_date']}</time></div>";
+		$html .= 	"</footer>"; //END footer
+		$html .= "</div>"; //END card
+    	return $html;
+    	
+    }  elseif (isset($props['module_class']) && $props['module_class'] === 'amp-listing-event-stream-feature') {
+   		$d = experience_field_data(get_post());
+		
+		$resource_type_blk = display_as_resource_block($d['resource_type'], $d['access_link']);
+		$description = wp_trim_words($d['description'], 80, ' ...');
+		$date_block_str = display_as_date_block($d['start_date'], false);
 
+		$html = "";
+		$html .= "<div class='card'>";
+		$html .= 	"<header class='card-header'>";
+		$html .=		"{$date_block_str}<h2 class='card-title'> <a href='{$d['link']}'>{$d['title']}</a></h2>";
+		$html .=		$resource_type_blk;
+		$html .= 		$d['people'];
+		$html .= 	"</header>";
 
-  //       $output .= "<div class='card-wrap-row{$single}'>";
-	 //        $output .= "<div>{$img}</div>";
-	 //        $output .= "<div class='card'>";
-		//         $output .= 	"<h4 class='card-title'>{$title}</h4>";
-		//         $output .= 	"<div><span class='{$pdtype_str}'>{$pdtype}</span>{$people_str}</div>";
-		//         $output .= 	"<div class=''>Updated {$updated}</div>";
-		//         $output .= 	"<div>{$blurb}</div>";
-		//     	$output .= "<div class='tag-series'>{$series_tags}</div>";
-	 //        	$output .= "<div class='tags'>{$tags}</div>";
-	 //        $output .= "</div>";
-  //       $output .= "</div>";  
+		$html .= 	"<div class='card-body'>{$description}</div>";
 
-  //       return $output;
-    	$p = get_post();
-    	return experience_post_data($p);
+		$html .= 	"<footer class='card-footer'>";
+		$html .= 		"<div class='tag-series'>{$d['series']}</div>";
+		$html .= 		"<div class='tags'>{$d['tags']}</div>";
+		$html .= 	"</footer>"; //END footer
+		$html .= "</div>"; //END card
+		return $html;
 
-    }  elseif (isset($props['admin_label']) && $props['admin_label'] === 'APL: Recently Featured') {
-    	$output = "";
+    }  elseif (isset($props['module_class']) && $props['module_class'] === 'amp-listing-event-stream-upcoming') {
+   		$d = experience_field_data(get_post());
+		
+		$resource_type_blk = display_as_resource_block($d['resource_type'], $d['access_link']);
+		$description = wp_trim_words($d['description'], 20, ' ...');
+		$date_block_str = display_as_date_block($d['start_date'], false);
 
-		$people = get_field('presenters__facilitators_relation');
-		$people_str = "";
-		if( $people ) {
-			$people_str .= " by ";
-			$len = count($people);
-			foreach( $people as $idx => $p) {
-			  $name = $p->post_title;
-			  $affiliation = get_field('affiliation', $p->ID);
-			  $position = get_field('position', $p->ID);
-			  $link = get_permalink($p->ID);
-			  $people_str .= "<span><a href='{$link}'>{$name}</a>";
-			  if ($idx === $len - 2) $people_str .= " & ";
-			  else if ($idx < $len -1) $people_str .= ", ";
-			  $people_str .= "</span>";
-			}
-		}
+		$html = "";
+		$html .= "<div class='card'>";
+		$html .= 	"<header class='card-header'>";
+		$html .=		"{$date_block_str}<h3 class='card-title'> <a href='{$d['link']}'>{$d['title']}</a></h3>";
+		$html .=		"{$resource_type_blk}{$d['people']}";
+		$html .= 	"</header>";
 
-        $exp_excerpt = get_post_meta( get_the_ID(), 'resource_description', true );
-        $blurb = wp_trim_words($exp_excerpt, 20, ' ...');
-        $start = get_field('start_date');
-        $updated = get_the_modified_date();
-        $pdtype = get_field('pd_resource');
-    	$pdtype_str = "";
-        if ($pdtype) { $pdtype_str = "label lbl-blu pd_resource_label";}
+		$html .= 	"<div class='card-body'>{$description}</div>";
 
-		$series_tags = get_the_term_list( get_the_ID(), 'series', 'In ', ''); 
-		$tags = get_the_term_list( get_the_ID(), 'experience_tags','', '');
+		$html .= 	"<footer class='card-footer'>";
+		$html .= 		"<div class='tag-series'>{$d['series']}</div>";
+		// $html .= 		"<div class='tags'>{$d['tags']}</div>";
+		$html .= 	"</footer>"; //END footer
+		$html .= "</div>"; //END card
 
-
-    	$output .= 	"<div><span class='{$pdtype_str}'>{$pdtype}</span>{$people_str}</div>";
-    	$output .= "<div>{$start}</div>";
-    	$output .= "<div>{$blurb}</div>";
-    	$output .= "<div class='tag-series'>{$series_tags}</div>";
-	    $output .= "<div class='tags'>{$tags}</div>";
-	    $output .= "<div class='mod-date'><time>Updated {$updated}</time></div>";
-    	return $output;
-    	// $p = get_post();
-    	// experience_post_data($p);
-    }  elseif (isset($props['admin_label']) && $props['admin_label'] === 'APL: Upcoming') {
-		$p = get_post();
-		// $show_thumb=true, $show_blurb=true, $show_start_date=false
-		return experience_post_data($p, false, true, true);
+		return $html;
     }
 }
 add_filter('dpdfg_after_read_more', 'dpdfg_after_read_more', 10, 2);
 
 
-/** END DIVI Custom Queries **/
+/** END DIVI Custom Displays for Advanced Filter Grid **/
 
 /** ACF Hooks **/
 //Before post is saved...
