@@ -39,7 +39,7 @@ Styles are currently specified through Divi admin panel.
 }
 
 .card {
-  min-height: 90%;
+  /*min-height: 90%;*/
   display: grid;
   grid-template-rows: auto 1fr auto;
   padding: 10px;
@@ -70,7 +70,7 @@ Styles are currently specified through Divi admin panel.
 }
 .card-footer {
   padding-top: 10px;
-  text-align: left
+  text-align: left;
 }
 
 .tags  a {

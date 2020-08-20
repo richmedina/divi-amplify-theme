@@ -48,7 +48,7 @@ function experience_field_data($p) {
 		'resource_type'	=>	get_field('pd_resource', $p->ID),
 		'series'		=> 	get_the_term_list( $p->ID, 'series', 'Part of ', ', '),
 		'start_date'	=> 	get_field('start_date', $p->ID),
-		'tags'			=> 	get_the_term_list( $p->ID, 'experience_tags', ' ', ', '),
+		'tags'			=> 	get_the_term_list( $p->ID, 'experience_tags', ' ', ' '),
 		'thumb'			=> 	get_the_post_thumbnail($p),
 		'title'			=> 	$p->post_title
 	);
@@ -352,7 +352,7 @@ function dpdfg_after_read_more($content, $props) {
    		$d = experience_field_data(get_post());
 		
 		$resource_type_blk = display_as_resource_block($d['resource_type'], $d['access_link']);
-		$description = wp_trim_words($d['description'], 80, ' ...');
+		$description = wp_trim_words($d['description'], 100, ' ...');
 		$date_block_str = display_as_date_block($d['start_date'], false);
 
 		$html = "";
