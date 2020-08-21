@@ -38,6 +38,11 @@ Styles are currently specified through Divi admin panel.
   grid-template-columns: minmax(230px, 1fr) 180px; 
 }
 
+.card-wrap-row.flip.single {
+  /*Horizontal card wrapper with one column:  */
+  grid-template-columns: 1fr;
+}
+
 .card {
   /*min-height: 90%;*/
   display: grid;

@@ -300,20 +300,21 @@ function dpdfg_after_read_more($content, $props) {
     }  elseif (isset($props['module_class']) && $props['module_class'] === 'amp-listing-flipped') {
    		$d = experience_field_data(get_post());
 		
-		$single = has_post_thumbnail() ? "" : ".single";
+		$single = has_post_thumbnail() ? "" : "single";
 		$resource_type_blk = display_as_resource_block($d['resource_type'], $d['access_link']);
-		$description = wp_trim_words($d['description'], 20, ' ...');
+		$description = wp_trim_words($d['description'], 100, ' ...');
+		$date_block_str = display_as_date_block($d['start_date']);
 
 		$html = "";		
-	  	$html = "<div class='card-wrap-row{$single}'>";
+	  	$html = "<div class='card-wrap-row flip {$single}'>";
 		$html .= 	"<div class='card'>";
 		$html .= 		"<header class='card-header'>";
-		$html .= 			"<h4 class='card-title'><a href='{$d['link']}'>{$d['title']}</a></h4>";
+		$html .= 			"{$date_block_str}<h4 class='card-title'><a href='{$d['link']}'>{$d['title']}</a></h4>";
 		$html .=			$resource_type_blk;
 		$html .= 			$d['people'];
 		$html .= 		"</header>";
 		
-		$html .= 		"<div class='card-body'><div class='date_str'>{$d['start_date']}</div>{$description}</div>";
+		$html .= 		"<div class='card-body'>{$description}</div>";
 		
 		$html .= 		"<footer class='card-footer'>";
 		$html .= 			"<div class='tag-series'>{$d['series']}</div>";
