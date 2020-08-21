@@ -288,11 +288,11 @@ function dpdfg_after_read_more($content, $props) {
 		
 		$html .= 		"<div class='card-body'><div class='date_str'>{$d['start_date']}</div>{$description}</div>";
 		
-		$html .= 		"<footer class='card-footer'>";
+		$html .= 		"<div class='card-footer'>";
 		$html .= 			"<div class='tag-series'>{$d['series']}</div>";
 		$html .= 			"<div class='tags'>{$d['tags']}</div>";
 		$html .= 			"<div class='mod-date'><time>Updated {$d['mod_date']}</time></div>";
-		$html .= 		"</footer>"; //END footer
+		$html .= 		"</div>"; //END footer
 		$html .= 	"</div>"; //END card	
 		$html .= "</div>"; //END grid row
     	return $html;
@@ -341,11 +341,11 @@ function dpdfg_after_read_more($content, $props) {
 
 		$html .= 	"<div class='card-body'><div class='date_str'>{$d['start_date']}</div>{$description}</div>";
 
-		$html .= 	"<footer class='card-footer'>";
+		$html .= 	"<div class='card-footer'>";
 		$html .= 		"<div class='tag-series'>{$d['series']}</div>";
 		$html .= 		"<div class='tags'>{$d['tags']}</div>";
 		$html .= 		"<div class='mod-date'><time>Updated {$d['mod_date']}</time></div>";
-		$html .= 	"</footer>"; //END footer
+		$html .= 	"</div>"; //END footer
 		$html .= "</div>"; //END card
     	return $html;
     	
@@ -366,10 +366,10 @@ function dpdfg_after_read_more($content, $props) {
 
 		$html .= 	"<div class='card-body'>{$description}</div>";
 
-		$html .= 	"<footer class='card-footer'>";
+		$html .= 	"<div class='card-footer'>";
 		$html .= 		"<div class='tag-series'>{$d['series']}</div>";
 		$html .= 		"<div class='tags'>{$d['tags']}</div>";
-		$html .= 	"</footer>"; //END footer
+		$html .= 	"</div>"; //END footer
 		$html .= "</div>"; //END card
 		return $html;
 
@@ -389,10 +389,10 @@ function dpdfg_after_read_more($content, $props) {
 
 		$html .= 	"<div class='card-body'>{$description}</div>";
 
-		$html .= 	"<footer class='card-footer'>";
+		$html .= 	"<div class='card-footer'>";
 		$html .= 		"<div class='tag-series'>{$d['series']}</div>";
 		// $html .= 		"<div class='tags'>{$d['tags']}</div>";
-		$html .= 	"</footer>"; //END footer
+		$html .= 	"</div>"; //END footer
 		$html .= "</div>"; //END card
 
 		return $html;
