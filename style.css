@@ -14,6 +14,10 @@
 Styles are currently specified through Divi admin panel.
 */
 
+#top-menu li.current-menu-item>a {
+  color: #0099cc;
+}
+
 .wrap-rows {
   display: grid;
   grid-template-columns: minmax(280px, 1fr);
