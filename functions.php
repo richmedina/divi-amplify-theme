@@ -25,7 +25,7 @@ function display_as_date_block($start_date, $display_year=true) {
 	} else {
 		$date_block_str .= "<div class='date-block-top'>{$mon}</div><div class='date-block-bottom'>{$day}</div><div class='date-block-footer'>{$year}</div>";
 	}
-    $date_block_str .= "</div>"; //END date block
+    $date_block_str .= "</div>"; 
     return $date_block_str;
 }
 
@@ -151,30 +151,6 @@ function experience_post_data($p, $show_thumb=true, $show_blurb=true, $show_star
 	$html .= "</div>"; //END grid row
 
 	return $html;
-
-
-	// if( $series ) {
-	// 	$html .= 	"<div class='tag-series'>Part of ";
-	// 	$len = count($series);
-	//     foreach( $series as $idx => $t) {
-	//     	$name = $t->name;
-	//     	$link = get_term_link($t);
-	//     	$html .= "<a href='{$link}'>{$name}</a>";
-	//         if ($idx === $len - 2) $html .= " & ";
-	//         else if ($idx < $len -1) $html .= ", ";
-	//     }
-	//     $html .= "</div>"; // End series tags
-	// }
-	// if( $tags ) {
-	// 	$html .= 	"<div class='tags'>";
-	// 	$len = count($tags);
-	//     foreach( $tags as $idx => $t) {
-	//     	$name = $t->name;
-	//     	$link = get_term_link($t);
-	//     	$html .= "<a href='{$link}'>{$name}</a>";
-	//     }
-	//     $html .= 	"</div>"; // END tags
-	// }
 }
 
 
@@ -252,7 +228,22 @@ function dp_dfg_custom_query_function($query, $props) {
 		    'offset'        => 0,
 		    'posts_per_page'=> 1,
         );    	
+    } elseif  (isset($props['admin_label']) && $props['admin_label'] === 'AMP: Cloud Series') {
+        return array(
+			'taxonomy' 		=> 'series',
+			'hide_empty'	=> true,
+			'orderby' 		=> 'count',
+			'order'			=> 'DESC'   	
+        );    	
+    } elseif  (isset($props['admin_label']) && $props['admin_label'] === 'AMP: Cloud Tags') {
+        return array(
+			'taxonomy' 		=> 'experience_tags',
+			'hide_empty'	=> true,
+			'orderby' 		=> 'count',
+			'order'			=> 'DESC'
+        );    	
     }
+
 }
 add_filter('dpdfg_custom_query_args', 'dp_dfg_custom_query_function', 10, 2);
 
@@ -405,49 +396,49 @@ add_filter('dpdfg_after_read_more', 'dpdfg_after_read_more', 10, 2);
 
 /** ACF Hooks **/
 //Before post is saved...
-add_action('acf/save_post', 'my_acf_save_post', 5);
-function my_acf_save_post( $post_id ) {
+// add_action('acf/save_post', 'my_acf_save_post', 5);
+// function my_acf_save_post( $post_id ) {
 
-    // Get previous values.
-    $prev_values = get_fields( $post_id );
+//     // Get previous values.
+//     $prev_values = get_fields( $post_id );
 
-    // Get submitted values.
-    $values = $_POST['acf'];
-    // Check if a specific value was updated.
-    if( isset($_POST['acf']['field_5f2b41ffcc785']) ) {
-        $tags = $_POST['acf']['field_5f2b41ffcc785'];
-        add_post_meta( $post_id, 'terms', 'red', true );
+//     // Get submitted values.
+//     $values = $_POST['acf'];
+//     // Check if a specific value was updated.
+//     if( isset($_POST['acf']['field_5f2b41ffcc785']) ) {
+//         $tags = $_POST['acf']['field_5f2b41ffcc785'];
+//         add_post_meta( $post_id, 'terms', 'red', true );
 
-        // echo '<p>Your sponsored by ' . $_POST['acf']['field_5f2b41ffcc785'] . '</p>';
-    }
+//         // echo '<p>Your sponsored by ' . $_POST['acf']['field_5f2b41ffcc785'] . '</p>';
+//     }
 
-}
+// }
 // After post is saved ... add the image from the form to the featured image of the post.
-add_action( 'acf/save_post', 'amp_save_image_field_to_featured_image');
-function amp_save_image_field_to_featured_image( $post_id ) {
+// add_action( 'acf/save_post', 'amp_save_image_field_to_featured_image');
+// function amp_save_image_field_to_featured_image( $post_id ) {
 
-	// Bail if not logged in or not able to post
-	if ( ! ( is_user_logged_in() || current_user_can('publish_posts') ) ) {
-		return;
-	}
+// 	// Bail if not logged in or not able to post
+// 	if ( ! ( is_user_logged_in() || current_user_can('publish_posts') ) ) {
+// 		return;
+// 	}
 
-	// Bail early if no ACF data
-	if( empty($_POST['acf']) ) {
-		return;
-	}
+// 	// Bail early if no ACF data
+// 	if( empty($_POST['acf']) ) {
+// 		return;
+// 	}
 
-	// ACF image field key
-	$image = $_POST['acf']['field_5f2b4242cc786'];
+// 	// ACF image field key
+// 	$image = $_POST['acf']['field_5f2b4242cc786'];
 
-	// Bail if image field is empty
-	if ( empty($image) ) {
-		return;
-	}
+// 	// Bail if image field is empty
+// 	if ( empty($image) ) {
+// 		return;
+// 	}
 
-	// Add the value which is the image ID to the _thumbnail_id meta data for the current post
-	add_post_meta( $post_id, '_thumbnail_id', $image );
+// 	// Add the value which is the image ID to the _thumbnail_id meta data for the current post
+// 	add_post_meta( $post_id, '_thumbnail_id', $image );
 
-}
+// }
 
 /** END ACF Hooks **/
 
