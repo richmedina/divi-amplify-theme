@@ -36,13 +36,12 @@ get_header();
 					    ),
 					);
 					$related_exps = get_posts($args);
-					$output = "";
 					if ( $related_exps ) {	    
+						echo "<ul style='list-unstyled'><li>Related Experiences: </li>";
 					    foreach ( $related_exps as $p ) {
-					    	$title = $p->post_title;
-							$link = get_permalink($p->ID);
-							echo "<p><a href='" . $link . "'>" . $title ."</a></p>";
+							echo "<li><a href='" . get_permalink($p->ID) . "'>" . $p->post_title ."</a></li>";
 						}
+						echo "</ul>";
 					}		      		
 		      	} 
 		      	?>
