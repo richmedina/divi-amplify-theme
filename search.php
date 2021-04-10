@@ -24,7 +24,7 @@ include('amplify-shortcodes.php');
 		      	<div> </div>
 		      	<?php 
 		      	if ($post->post_type === 'presenter') {
-		      		$output = pd_person_exp_relation_func();
+		      		// $output = pd_person_exp_relation_func();
 		      	} 
 		      	?>
 				<div>
