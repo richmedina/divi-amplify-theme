@@ -23,9 +23,9 @@ include('amplify-shortcodes.php');
 		      <div class="card-meta">
 		      	<div> </div>
 		      	<?php 
-		      	if ($post->post_type === 'presenter') {
-		      		// $output = pd_person_exp_relation_func();
-		      	} 
+		      	// if ($post->post_type === 'presenter') {
+		      	// 	// $output = pd_person_exp_relation_func();
+		      	// } 
 		      	?>
 				<div>
 					<a href="<?php the_field('url_website'); ?>"><span class="label lbl-blu pd_resource_label"><?php the_field('pd_resource');?></span></a>
