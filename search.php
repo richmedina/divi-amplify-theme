@@ -48,7 +48,7 @@ get_header();
 				<div>
 					<a href="<?php the_field('url_website'); ?>"><span class="label lbl-blu pd_resource_label"><?php the_field('pd_resource');?></span></a>
 				<?php					
-					$people = get_field('presenters__authors_relation');
+					$people = get_field('presenters__facilitators_relation');
 					if( $people ) {
 						echo " by ";
 						$len = count($people);
