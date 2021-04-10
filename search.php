@@ -53,9 +53,7 @@ get_header();
 						echo " by ";
 						$len = count($people);
 					    foreach( $people as $idx => $p) {
-					    	$name = get_field('full_name', $p->ID);
-					    	$affiliation = get_field('affiliation', $p->ID);
-					    	$position = get_field('position', $p->ID);
+					    	$name = get_field('title', $p->ID);
 					    	$link = get_permalink($p->ID);
 			                echo "<span><a href='{$link}'>{$name}</a>";
 			                if ($idx === $len - 2) echo " & ";
