@@ -5,7 +5,6 @@ Customized for pdlang.
 */
 get_header();
 
-include('amplify-shortcodes.php');
 
 ?>
 <div id="main-content">
@@ -23,9 +22,29 @@ include('amplify-shortcodes.php');
 		      <div class="card-meta">
 		      	<div> </div>
 		      	<?php 
-		      	// if ($post->post_type === 'presenter') {
-		      	// 	// $output = pd_person_exp_relation_func();
-		      	// } 
+		      	if ($post->post_type === 'presenter') {
+					$args = array(
+					    'numberposts'  	=> -1,
+					    'post_type'		=> 'experience',
+					    'posts_per_page'=> -1,
+					    'meta_query'   	=> array( 
+					    	array(
+					    		'key'	 =>'presenters__facilitators_relation',
+					    		'value'	 =>'"'. $post->ID .'"', 
+					    		'compare'=>'LIKE',
+					    	)
+					    ),
+					);
+					$related_exps = get_posts($args);
+					$output = "";
+					if ( $related_exps ) {	    
+					    foreach ( $related_exps as $p ) {
+					    	$title = $p->post_title;
+							$link = get_permalink($p->ID);
+							echo "<p><a href='" . $link . "'>" . $link ."</a></p>";
+						}
+					}		      		
+		      	} 
 		      	?>
 				<div>
 					<a href="<?php the_field('url_website'); ?>"><span class="label lbl-blu pd_resource_label"><?php the_field('pd_resource');?></span></a>
