@@ -52,9 +52,9 @@ get_header();
 					if( $people ) {
 						echo " by ";
 						$len = count($people);
-					    foreach( $people as $idx => $p) {
-					    	$name = get_field('post_title', $p->ID);
-					    	$link = get_permalink($p->ID);
+					    foreach( $people as $idx => $ppl) {
+					    	$name = $ppl->post_title;
+					    	$link = get_permalink($ppl->ID);
 			                echo "<span><a href='{$link}'>{$name}</a>";
 			                if ($idx === $len - 2) echo " & ";
 			                else if ($idx < $len -1) echo ", ";
