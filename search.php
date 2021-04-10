@@ -5,6 +5,8 @@ Customized for pdlang.
 */
 get_header();
 
+include('amplify-shortcodes.php');
+
 ?>
 <div id="main-content">
 	
@@ -20,6 +22,11 @@ get_header();
 		      <h2 class="card-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
 		      <div class="card-meta">
 		      	<div> </div>
+		      	<?php 
+		      	if ($post->post_type === 'presenter') {
+		      		echo pd_person_exp_relation_func();
+		      	} 
+		      	?>
 				<div>
 					<a href="<?php the_field('url_website'); ?>"><span class="label lbl-blu pd_resource_label"><?php the_field('pd_resource');?></span></a>
 				<?php					
