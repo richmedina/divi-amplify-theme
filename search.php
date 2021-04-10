@@ -12,11 +12,12 @@ get_header();
 		<h1><?php single_term_title( '', true ); ?></h1>
 	
 	<?php while ( have_posts() ) : the_post(); ?>
+		global $post;
 		<article class="card-wrap-row flip clearfix">
 		  
 		  <div class="card">
 		    <header class="card-header">
-		      <h2 class="card-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?> <?php echo $p->post_type;?></a></h2>
+		      <h2 class="card-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?> <?php echo $post->post_type;?></a></h2>
 		      <div class="card-meta">
 		      	<div> </div>
 				<div>
