@@ -41,7 +41,7 @@ get_header();
 					    foreach ( $related_exps as $p ) {
 					    	$title = $p->post_title;
 							$link = get_permalink($p->ID);
-							echo "<p><a href='" . $link . "'>" . $link ."</a></p>";
+							echo "<p><a href='" . $link . "'>" . $title ."</a></p>";
 						}
 					}		      		
 		      	} 
