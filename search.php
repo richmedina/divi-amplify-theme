@@ -12,7 +12,7 @@ get_header();
 		<h1><?php single_term_title( '', true ); ?></h1>
 	
 	<?php while ( have_posts() ) : the_post(); ?>
-		global $post;
+		<?php global $post; ?>
 		<article class="card-wrap-row flip clearfix">
 		  
 		  <div class="card">
