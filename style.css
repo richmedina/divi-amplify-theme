@@ -105,7 +105,7 @@ Styles are currently specified through Divi admin panel.
 .date-block-bottom {font-size: 2.0em; padding-top: 10px;}
 .date-block-footer {font-size: .8em; padding-top: 5px; text-align: center; color: lightgrey;}
 .date-block.no-year {height: 75px;}
-.date-block .past_date {background-color: #333;}
+/*.date-block .past_date {background-color: #333;}*/
 .label {display: inline-block; padding:0 3px 0 3px; font-weight:800; font-size:80%; text-align: center; text-transform:uppercase; max-width: 96px; min-width: 96px;}
 .lbl-blu {background-color:#0099cc; color:#ffffff}
 .lbl-red {background-color:#cc3333; color:#ffffff}
