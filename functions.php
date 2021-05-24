@@ -203,7 +203,7 @@ function dp_dfg_custom_query_function($query, $props) {
 				array(
 				 'key'     	=> 'start_date',
 				 // 'value'   	=> date( "Y-m-d" ),
-				 'value'   	=> date( "2021-01-01" ),
+				 'value'   	=> date( "2021-02-10" ),
 				 'compare' 	=> '>=',
 				 'type'    	=> 'DATE'
 				)
@@ -220,7 +220,7 @@ function dp_dfg_custom_query_function($query, $props) {
 				array(
 				 'key'     	=> 'start_date',
 				 // 'value'   	=> date( "Y-m-d" ),
-				 'value'   	=> date( "2021-01-01" ),
+				 'value'   	=> date( "2021-02-10" ),
 				 'compare' 	=> '>=',
 				 'type'    	=> 'DATE'
 				)
